@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BailBridge | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+            --glass: rgba(255, 255, 255, 0.03);
+            --accent-gold: #fbbf24;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: rgba(15, 23, 42, 0.8);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .nav-item:hover:not(.active) {
+            background: var(--glass);
+            color: var(--text);
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .header {
+            height: 70px;
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .search-bar {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 20px;
+            width: 300px;
+            color: white;
+            outline: none;
+        }
+
+        /* Chat Layout */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            padding: 24px;
+            gap: 24px;
+            overflow: hidden;
+        }
+
+        .chat-view {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 44px;
+            height: 44px;
+            background: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .message.received {
+            background: var(--glass);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.sent {
+            background: var(--primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-input {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 12px 20px;
+            border-radius: 12px;
+            color: white;
+            outline: none;
+        }
+
+        .send-btn {
+            background: var(--primary);
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Notification Tray */
+        .notification-tray {
+            width: 340px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .tray-header {
+            padding: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-list {
+            padding: 12px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            padding: 16px;
+            border-radius: 16px;
+            margin-bottom: 8px;
+            background: var(--glass);
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .notification-item:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .notification-item.unread {
+            border-left: 3px solid var(--primary);
+        }
+
+        .notif-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .notif-body {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .notif-time {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            display: block;
+        }
+
+        .badge {
+            background: var(--primary);
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* Typing Indicator */
+        .typing {
+            font-size: 12px;
+            color: var(--text-muted);
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .typing span {
+            width: 4px;
+            height: 4px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .typing span:nth-child(1) { animation-delay: -0.32s; }
+        .typing span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            BailBridge
+        </div>
+        <a href="#" class="nav-item">Dashboard</a>
+        <a href="#" class="nav-item active">Legal Chat</a>
+        <a href="#" class="nav-item">Bail Agents</a>
+        <a href="#" class="nav-item">Documents</a>
+        <a href="#" class="nav-item">Settings</a>
+    </div>
+
+    <div class="main">
+        <header class="header">
+            <input type="text" class="search-bar" placeholder="Search cases...">
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <span class="status-dot"></span>
+                <span style="font-size: 14px;">Online</span>
+                <div class="avatar">U</div>
+            </div>
+        </header>
+
+        <div class="chat-container">
+            <div class="chat-view">
+                <div class="chat-header">
+                    <div class="avatar" style="background: #10b981;">A</div>
+                    <div>
+                        <div style="font-weight: 600;">Gemini Legal Assistant</div>
+                        <div style="font-size: 12px; color: var(--text-muted);">Case #BB-2026-0852</div>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="messages">
+                    <div class="message received">
+                        Hello! I am your BailBridge Legal Assistant. I have successfully processed your intake form.
+                    </div>
+                    <div class="message received">
+                        I've also scanned for nearby e-Seva centres for your document submission. Would you like to see the list?
+                    </div>
+                    <div class="message sent">
+                        Yes, please show me the nearest ones.
+                    </div>
+                    <div class="message received">
+                        I found 3 centres within 5km. One is just 1.2km away at the District Court complex.
+                    </div>
+                </div>
+
+                <div class="typing">
+                    Gemini is typing <span></span><span></span><span></span>
+                </div>
+
+                <div class="chat-input">
+                    <input type="text" placeholder="Type your message...">
+                    <button class="send-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="notification-tray">
+                <div class="tray-header">
+                    Notifications
+                    <span class="badge">3 New</span>
+                </div>
+                <div class="notification-list">
+                    <div class="notification-item unread">
+                        <div class="notif-title">NALSA Form Generated</div>
+                        <div class="notif-body">Your legal aid application for Case #BB-2026-0852 is ready for review.</div>
+                        <span class="notif-time">2 mins ago</span>
+                    </div>
+                    <div class="notification-item unread">
+                        <div class="notif-title">Help Locations Found</div>
+                        <div class="notif-body">Found 5 nearest legal aid centres near your current GPS location.</div>
+                        <span class="notif-time">15 mins ago</span>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notif-title">Agent Assigned</div>
+                        <div class="notif-body">Agent Rajesh Kumar has been assigned to assist with your bail process.</div>
+                        <span class="notif-time">1 hour ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

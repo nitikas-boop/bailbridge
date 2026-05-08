@@ -113,5 +113,14 @@ class _Settings:
         return [o.strip() for o in raw.split(",")]
 
 
+    @property
+    def prod_mode(self) -> bool:
+        """
+        Set to true to use real Firebase. False uses Mock Firestore.
+        PROD_MODE=true
+        """
+        return os.getenv("PROD_MODE", "false").lower() in ("1", "true", "yes")
+
+
 # Singleton instance — import and use this everywhere.
 settings = _Settings()
